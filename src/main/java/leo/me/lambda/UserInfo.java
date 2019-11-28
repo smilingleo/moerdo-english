@@ -3,6 +3,8 @@ package leo.me.lambda;
 import static leo.me.Constants.FREE_USER_CLASS;
 import static leo.me.Constants.PAID_USER_CLASS;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Objects;
 
 public class UserInfo {
@@ -84,10 +86,12 @@ public class UserInfo {
         this.leftPoints = leftPoints;
     }
 
+    @JsonIgnore
     public boolean isFreeUser() {
         return Objects.equals(FREE_USER_CLASS, this.getUserClass());
     }
 
+    @JsonIgnore
     public boolean isPaidUser() {
         return Objects.equals(PAID_USER_CLASS, this.getUserClass());
     }
