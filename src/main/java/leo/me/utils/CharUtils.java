@@ -1,4 +1,4 @@
-package leo.me;
+package leo.me.utils;
 
 public class CharUtils {
 

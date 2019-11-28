@@ -1,5 +1,7 @@
 package leo.me.anki;
 
+import leo.me.polly.PollyConfig;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,4 +45,17 @@ public class AnkiNote {
     public void setItemGroups(List<AnkiNoteItemGroup> itemGroups) {
         this.itemGroups = itemGroups;
     }
+
+    public String getEncodedWord(PollyConfig config) {
+        return getBreakBeforeWord(config) + word + getBreak(config);
+    }
+
+    private String getBreak(PollyConfig config) {
+        return "<break time=\"" + config.getPause() + "s\"/>";
+    }
+
+    private String getBreakBeforeWord(PollyConfig config) {
+        return "<break time=\"" + config.getPauseBeforeWord() + "s\"/>";
+    }
+
 }

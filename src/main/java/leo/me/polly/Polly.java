@@ -22,7 +22,9 @@ public class Polly {
     private final Voice chineseVoice;
     private final Voice englishVoice;
     private final AmazonPollyClient polly;
+    private final PollyConfig config;
     public Polly(PollyConfig config) {
+        this.config = config;
         // create an Amazon Polly client in a specific region
         polly = new AmazonPollyClient(new DefaultAWSCredentialsProviderChain(),
                 new ClientConfiguration());
@@ -94,4 +96,7 @@ public class Polly {
         return polly.synthesizeSpeech(synthReq);
     }
 
+    public PollyConfig getConfig() {
+        return config;
+    }
 }

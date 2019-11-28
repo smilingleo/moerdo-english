@@ -8,8 +8,8 @@ import leo.me.anki.NoteItem;
 import leo.me.polly.Polly;
 import leo.me.polly.PollyConfig;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -29,13 +29,13 @@ public class TtsService {
      * @param outputStream
      * @param ankiNote
      */
-    public void textToSpeech(List<NoteItem> options, FileOutputStream outputStream, AnkiNote ankiNote) {
+    public void textToSpeech(List<NoteItem> options, OutputStream outputStream, AnkiNote ankiNote) {
         options.forEach(item -> {
             try {
                 switch (item) {
                     case WORD:
                         if (!isNullOrEmpty(ankiNote.getWord())) {
-                            outputStream.write(polly.encodeEnglish(ankiNote.getWord()));
+                            outputStream.write(polly.encodeEnglish(ankiNote.getEncodedWord(polly.getConfig())));
                         }
                         break;
                     case SPELL:

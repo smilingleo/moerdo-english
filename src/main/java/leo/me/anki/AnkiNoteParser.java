@@ -1,15 +1,13 @@
 package leo.me.anki;
 
-import static leo.me.CharUtils.ssmlEscape;
+import static leo.me.utils.CharUtils.ssmlEscape;
 
 import com.google.common.primitives.Chars;
-import leo.me.CharUtils;
+import leo.me.utils.CharUtils;
 import leo.me.polly.PollyConfig;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AnkiNoteParser {
 
@@ -23,8 +21,7 @@ public class AnkiNoteParser {
 
         AnkiNote note = new AnkiNote();
         final String word = content.substring(0, content.indexOf("<div") - 1);
-        String ssmlWord = getBreakBeforeWord() + word + getBreak();
-        note.setWord(ssmlWord);
+        note.setWord(word);
         note.setSpell(Chars.join(",", word.toCharArray()));
 
         Document doc = Jsoup.parse(content);
@@ -68,14 +65,6 @@ public class AnkiNoteParser {
 
     private String getBreak() {
         return "<break time=\"" + config.getPause() + "s\"/>";
-    }
-
-    private String getBreakBeforeWord() {
-        return "<break time=\"" + config.getPauseBeforeWord() + "s\"/>";
-    }
-
-    private String getBreakBetweenNotes() {
-        return "<break time=\"" + config.getPauseBetweenNotes() + "s\"/>";
     }
 
     private static String replace(String text) {
