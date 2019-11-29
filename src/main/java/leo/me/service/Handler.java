@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import leo.me.lambda.MoerdoRequest;
 import leo.me.lambda.MoerdoResponse;
-import leo.me.lambda.UserInfo;
+import leo.me.lambda.vo.UserInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -79,10 +79,13 @@ public interface Handler {
                 throw new IllegalStateException("Failed to serialize userInfo", e);
             }
         }
-        // enforce the usage policy
-        (new UserUsagePolicy()).evaluate(userInfo, s3Client);
 
         return userInfo;
+    }
+
+    default void evaluateLimit(UserInfo userInfo) {
+        // enforce the usage policy
+        (new UserUsagePolicy()).evaluate(userInfo, s3Client);
     }
 
 }

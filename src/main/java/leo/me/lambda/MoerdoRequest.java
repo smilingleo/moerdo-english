@@ -35,11 +35,6 @@ public class MoerdoRequest {
     private int exampleLimit = -1;
 
     /**
-     * In case of loading history audio
-     */
-    private String timestamp;
-
-    /**
      * Text to Speech mode.
      * Must less than 5000 words.
      */
@@ -118,14 +113,6 @@ public class MoerdoRequest {
 
     public void setCommand(String command) {
         this.command = command;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
     }
 
     public String getUserClass() {

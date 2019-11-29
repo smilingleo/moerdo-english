@@ -37,4 +37,5 @@ public class Constants {
 
     public static final String GET_OPENID_URI = "https://api.weixin.qq.com/sns/jscode2session";
 
+    public static final int LIMIT_HISTORY_BY_MONTH = 6;
 }

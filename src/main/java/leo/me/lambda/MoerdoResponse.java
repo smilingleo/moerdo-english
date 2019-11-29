@@ -1,15 +1,26 @@
 package leo.me.lambda;
 
+import leo.me.lambda.vo.HistoryRecord;
+import leo.me.lambda.vo.UserInfo;
+
+import java.util.List;
+
 public class MoerdoResponse {
+
+    /**
+     * for read-words call
+     */
     private byte[] audioData;
     private String uri;
-
     /**
      * For every request, carry userInfo.
      */
     private UserInfo userInfo;
 
-    private String timestamp;
+    /**
+     * For list history call.
+     */
+    private List<HistoryRecord> historyRecords;
 
     /**
      * This is for get open-id call.
@@ -43,19 +54,19 @@ public class MoerdoResponse {
         this.userInfo = userInfo;
     }
 
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
     public String getOpenId() {
         return openId;
     }
 
     public void setOpenId(String openId) {
         this.openId = openId;
+    }
+
+    public List<HistoryRecord> getHistoryRecords() {
+        return historyRecords;
+    }
+
+    public void setHistoryRecords(List<HistoryRecord> historyRecords) {
+        this.historyRecords = historyRecords;
     }
 }

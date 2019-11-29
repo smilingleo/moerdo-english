@@ -1,4 +1,4 @@
-package leo.me.lambda;
+package leo.me.lambda.vo;
 
 import static leo.me.Constants.FREE_USER_CLASS;
 import static leo.me.Constants.PAID_USER_CLASS;

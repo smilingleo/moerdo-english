@@ -7,13 +7,16 @@ import static leo.me.Constants.PAID_USER_TEXT_LIMIT;
 import com.google.common.base.Strings;
 import leo.me.lambda.MoerdoRequest;
 import leo.me.lambda.MoerdoResponse;
-import leo.me.lambda.UserInfo;
+import leo.me.lambda.vo.UserInfo;
 
 public class ReadTextHandler implements Handler {
 
     @Override
     public MoerdoResponse handle(MoerdoRequest request) {
         UserInfo userInfo = refreshUserInfo(request);
+
+        evaluateLimit(userInfo);
+
         validateRequest(userInfo, request);
 
         //TODO: automatically determin the test is english or chinese.

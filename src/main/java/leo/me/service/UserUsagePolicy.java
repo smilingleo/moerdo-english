@@ -7,7 +7,7 @@ import static leo.me.Constants.USER_BUCKET_NAME;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import leo.me.lambda.UserInfo;
+import leo.me.lambda.vo.UserInfo;
 import leo.me.utils.DateTimeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

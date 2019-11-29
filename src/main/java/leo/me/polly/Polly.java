@@ -11,8 +11,6 @@ import com.amazonaws.services.polly.model.SynthesizeSpeechResult;
 import com.amazonaws.services.polly.model.TextType;
 import com.amazonaws.services.polly.model.Voice;
 import com.google.common.io.ByteStreams;
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.advanced.AdvancedPlayer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,30 +39,6 @@ public class Polly {
         chineseVoice = describeVoicesResult.getVoices().stream()
                 .filter(voice -> "Chinese Mandarin".equals(voice.getLanguageName()) && config.getChineseVoiceId().equals(voice.getId()))
                 .findFirst().get();
-    }
-
-    public void speakChinese(String text) {
-        speak(text, chineseVoice);
-    }
-
-    public void speakEnglish(String text) {
-        speak(text, englishVoice);
-    }
-
-    private void speak(String text, Voice voice) {
-        try {
-            SynthesizeSpeechResult synthRes = getSynthesizeSpeechResult(text, voice);
-
-            //create an MP3 player
-            AdvancedPlayer player = new AdvancedPlayer(synthRes.getAudioStream(),
-                    javazoom.jl.player.FactoryRegistry.systemRegistry().createAudioDevice());
-            // play it!
-            player.play();
-
-        } catch (JavaLayerException e) {
-            e.printStackTrace();
-        }
-
     }
 
     public byte[] encodeChinese(String text) {

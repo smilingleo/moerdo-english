@@ -7,7 +7,7 @@ import static leo.me.Constants.VALID_USER_CLASS;
 import com.google.common.base.Strings;
 import leo.me.lambda.MoerdoRequest;
 import leo.me.lambda.MoerdoResponse;
-import leo.me.lambda.UserInfo;
+import leo.me.lambda.vo.UserInfo;
 
 import java.io.IOException;
 import java.util.stream.Collectors;

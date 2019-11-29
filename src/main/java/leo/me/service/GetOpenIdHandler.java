@@ -33,7 +33,7 @@ public class GetOpenIdHandler implements Handler {
             throw new IllegalArgumentException("Required argument 'code' is missing.");
         }
 
-        String url = format("%s?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", appId, appSecret, code);
+        String url = format("%s?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", GET_OPENID_URI, appId, appSecret, code);
         Request httpRequest = new Request.Builder()
                 .url(url)
                 .build();

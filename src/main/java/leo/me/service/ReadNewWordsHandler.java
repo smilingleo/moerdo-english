@@ -2,9 +2,9 @@ package leo.me.service;
 
 import static java.lang.String.format;
 import static leo.me.Constants.FREE_USER_WORDS_LIMIT;
+import static leo.me.Constants.OPTION_PATTERN;
 import static leo.me.Constants.PAID_USER_WORDS_LIMIT;
 import static leo.me.Constants.USER_BUCKET_NAME;
-import static leo.me.Constants.OPTION_PATTERN;
 
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.IOUtils;
@@ -13,7 +13,7 @@ import leo.me.anki.AnkiNoteParser;
 import leo.me.anki.NoteItem;
 import leo.me.lambda.MoerdoRequest;
 import leo.me.lambda.MoerdoResponse;
-import leo.me.lambda.UserInfo;
+import leo.me.lambda.vo.UserInfo;
 import leo.me.polly.Polly;
 import leo.me.polly.PollyConfig;
 import leo.me.utils.DateTimeUtils;
@@ -45,6 +45,8 @@ public class ReadNewWordsHandler implements Handler {
 
         UserInfo userInfo = refreshUserInfo(request);
 
+        evaluateLimit(userInfo);
+
         validateReadWordsRequest(request);
 
         validateWordsByUserProfile(userInfo, request);
@@ -67,12 +69,19 @@ public class ReadNewWordsHandler implements Handler {
         // get the audio url
         String url = fetcher.audioData(notes.stream().map(note -> parser.parse(note)).collect(Collectors.toList()), options);
 
+        // generate the txt file
+        final String txtFileKey = format("%s/audio/%s.txt", request.getWechatId(), timestamp);
+        s3Client.putObject(USER_BUCKET_NAME, txtFileKey,
+                request.getWords().stream().collect(Collectors.joining(",")));
+        log.info(format("Saved txt file: %s", txtFileKey));
+
         MoerdoResponse response = new MoerdoResponse();
         response.setUserInfo(userInfo);
         if (Objects.equals("link", request.getResponseType())) {
             response.setUri(url);
         } else {
-            S3Object object = s3Client.getObject(USER_BUCKET_NAME, format("%s/audio/%s.mp3", request.getWechatId(), timestamp));
+            final String mp3FileKey = format("%s/audio/%s.mp3", request.getWechatId(), timestamp);
+            S3Object object = s3Client.getObject(USER_BUCKET_NAME, mp3FileKey);
             try {
                 response.setAudioData(IOUtils.toByteArray(object.getObjectContent()));
             } catch (IOException e) {
