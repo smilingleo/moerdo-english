@@ -23,21 +23,21 @@ public class UserUsagePolicy {
         String prefix = format("%s/audio/%s", userInfo.getWechatId(), currentMonth);
         List<S3ObjectSummary> summaries = s3Client.listObjects(USER_BUCKET_NAME, prefix).getObjectSummaries();
 
-        log.info(format("user %s has %d audios in %s", userInfo.getWechatId(), summaries.size(), prefix));
+        log.info(format("user %s has %d records in %s", userInfo.getWechatId(), summaries.size(), prefix));
 
         int pointLimit = 0;
         if (userInfo.isFreeUser()) {
-            pointLimit = FREE_USER_POINT_LIMIT;
-            if (summaries.size() >= FREE_USER_POINT_LIMIT) {
-                throw new RuntimeException("免费用户每月（自然月）只能制作25个语音包，请升级为付费用户。");
+            pointLimit = FREE_USER_POINT_LIMIT * 2;
+            if (summaries.size() >= pointLimit) {
+                throw new RuntimeException(format("免费用户每月（自然月）只能制作%d个语音包，请升级为付费用户。", FREE_USER_POINT_LIMIT));
             }
         } else if (userInfo.isPaidUser()) {
-            pointLimit = PAID_USER_POINT_LIMIT;
-            if (summaries.size() >= PAID_USER_POINT_LIMIT) {
-                throw new RuntimeException("普通付费用户每月（自然月）只能制作100个语音包，请升级为付费用户。");
+            pointLimit = PAID_USER_POINT_LIMIT * 2;
+            if (summaries.size() >= pointLimit) {
+                throw new RuntimeException(format("普通付费用户每月（自然月）只能制作%d个语音包，请升级为付费用户。", PAID_USER_POINT_LIMIT));
             }
         }
 
-        userInfo.setLeftPoints(pointLimit - summaries.size());
+        userInfo.setLeftPoints((pointLimit - summaries.size()) / 2);
     }
 }

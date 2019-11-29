@@ -93,11 +93,11 @@ public class ReadNewWordsHandler implements Handler {
 
     private void validateWordsByUserProfile(UserInfo userInfo, MoerdoRequest request) {
         if (userInfo.isFreeUser() && request.getWords().size() > FREE_USER_WORDS_LIMIT) {
-            throw new IllegalArgumentException("免费用户只能每次制作不超过10个单词的语音包。");
+            throw new IllegalArgumentException(format("免费用户只能每次制作不超过%d个单词的语音包。", FREE_USER_WORDS_LIMIT));
         }
 
         if (userInfo.isPaidUser() && request.getWords().size() > PAID_USER_WORDS_LIMIT) {
-            throw new IllegalArgumentException("普通付费用户只能每次制作不超过50个单词的语音包。");
+            throw new IllegalArgumentException(format("普通付费用户只能每次制作不超过%d个单词的语音包。", PAID_USER_WORDS_LIMIT));
         }
     }
 
