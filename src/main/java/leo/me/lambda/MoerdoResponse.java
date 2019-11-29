@@ -11,6 +11,11 @@ public class MoerdoResponse {
 
     private String timestamp;
 
+    /**
+     * This is for get open-id call.
+     */
+    private String openId;
+
     public MoerdoResponse() {
     }
 
@@ -44,5 +49,13 @@ public class MoerdoResponse {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 }

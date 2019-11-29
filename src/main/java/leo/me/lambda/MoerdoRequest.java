@@ -56,6 +56,11 @@ public class MoerdoRequest {
      */
     private String userClass = FREE_USER_CLASS;
 
+    /**
+     * client code, used to get wechat openid, only valid in GET_OPENID
+     */
+    private String code;
+
     public MoerdoRequest() {
     }
 
@@ -129,5 +134,13 @@ public class MoerdoRequest {
 
     public void setUserClass(String userClass) {
         this.userClass = userClass;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

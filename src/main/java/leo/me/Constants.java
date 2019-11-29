@@ -32,5 +32,9 @@ public class Constants {
     public static final String CMD_READ_TEXT = "READ_TEXT";
     public static final String CMD_LIST_HISTORY = "LIST_HISTORY";
     public static final String CMD_CHANGE_USER = "CHANGE_USER";
+    public static final String CMD_GET_OPENID = "GET_OPENID";
+
+
+    public static final String GET_OPENID_URI = "https://api.weixin.qq.com/sns/jscode2session";
 
 }

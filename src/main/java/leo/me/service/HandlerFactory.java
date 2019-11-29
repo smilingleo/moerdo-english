@@ -14,6 +14,8 @@ public class HandlerFactory {
             return new ListHistoryHandler();
         } else if (CMD_CHANGE_USER.equalsIgnoreCase(request.getCommand())) {
             return new UserManagementHandler();
+        } else if (CMD_GET_OPENID.equalsIgnoreCase(request.getCommand())) {
+            return new GetOpenIdHandler();
         } else {
             throw new IllegalArgumentException("unknown command:" + request.getCommand());
         }
