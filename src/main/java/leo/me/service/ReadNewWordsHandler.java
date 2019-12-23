@@ -11,6 +11,8 @@ import com.amazonaws.util.IOUtils;
 import leo.me.anki.AnkiNoteDao;
 import leo.me.anki.AnkiNoteParser;
 import leo.me.anki.NoteItem;
+import leo.me.exception.ClientSideException;
+import leo.me.exception.ServerSideException;
 import leo.me.lambda.MoerdoRequest;
 import leo.me.lambda.MoerdoResponse;
 import leo.me.lambda.vo.UserInfo;
@@ -85,7 +87,7 @@ public class ReadNewWordsHandler implements Handler {
             try {
                 response.setAudioData(IOUtils.toByteArray(object.getObjectContent()));
             } catch (IOException e) {
-                throw new IllegalStateException("failed to load file: " + timestamp, e);
+                throw new ServerSideException("加载文件内容失败: " + timestamp, e);
             }
         }
         return response;
@@ -93,11 +95,11 @@ public class ReadNewWordsHandler implements Handler {
 
     private void validateWordsByUserProfile(UserInfo userInfo, MoerdoRequest request) {
         if (userInfo.isFreeUser() && request.getWords().size() > FREE_USER_WORDS_LIMIT) {
-            throw new IllegalArgumentException(format("免费用户只能每次制作不超过%d个单词的语音包。", FREE_USER_WORDS_LIMIT));
+            throw new ClientSideException(format("免费用户只能每次制作不超过%d个单词的语音包。", FREE_USER_WORDS_LIMIT));
         }
 
         if (userInfo.isPaidUser() && request.getWords().size() > PAID_USER_WORDS_LIMIT) {
-            throw new IllegalArgumentException(format("普通付费用户只能每次制作不超过%d个单词的语音包。", PAID_USER_WORDS_LIMIT));
+            throw new ClientSideException(format("普通付费用户只能每次制作不超过%d个单词的语音包。", PAID_USER_WORDS_LIMIT));
         }
     }
 
@@ -106,11 +108,11 @@ public class ReadNewWordsHandler implements Handler {
         validateResponseType(request.getResponseType());
 
         if (request.getWords() == null || request.getWords().isEmpty()) {
-            throw new IllegalArgumentException("missing required parameter: 'words'");
+            throw new ClientSideException("请输入逗号分割单词之后再提交。");
         }
 
         if (!OPTION_PATTERN.matcher(request.getOptions()).matches()) {
-            throw new IllegalArgumentException("invalid option: " + request.getOptions());
+            throw new ClientSideException("检测到非法配置: " + request.getOptions());
         }
 
     }

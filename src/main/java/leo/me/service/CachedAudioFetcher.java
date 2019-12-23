@@ -14,6 +14,7 @@ import com.amazonaws.util.IOUtils;
 import leo.me.anki.AnkiNote;
 import leo.me.anki.AnkiNoteItemGroup;
 import leo.me.anki.NoteItem;
+import leo.me.exception.ServerSideException;
 import leo.me.polly.Polly;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -162,7 +163,7 @@ public class CachedAudioFetcher {
 
                 s3Client.putObject(SYSTEM_BUCKET_NAME, name, inputStream, metadata);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new ServerSideException("存储音频文件时发生错误，请联系作者。", e);
             }
             return bytes;
         }
@@ -179,7 +180,7 @@ public class CachedAudioFetcher {
             log.info(format("read from %s, the byte length: %d", name, bytes.length));
             return bytes;
         } catch (IOException e) {
-            throw new IllegalStateException("failed to load content from file: " + name);
+            throw new ServerSideException("读取文件:" + name + "内容时发生错误。");
         } finally {
             IOUtils.closeQuietly(object, log);
         }
