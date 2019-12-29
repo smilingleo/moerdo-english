@@ -23,6 +23,8 @@ public class HandlerFactory {
             return new AnkiListDeckHandler(new AnkiWebClient());
         } else if (CMD_ANKI_GET_CARDS.equalsIgnoreCase(request.getCommand())) {
             return new AnkiGetCardsHandler(new AnkiWebClient());
+        } else if (CMD_ANKI_SET_DECK.equalsIgnoreCase(request.getCommand())) {
+            return new AnkiSetDeckHandler(new AnkiWebClient());
         } else {
             throw new ClientSideException(format("不支持的命令:%s, 请通过《世凝听记》小程序调用API", request.getCommand()));
         }

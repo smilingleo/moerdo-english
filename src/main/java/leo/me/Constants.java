@@ -35,6 +35,7 @@ public class Constants {
     public static final String CMD_GET_OPENID = "GET_OPENID";
     public static final String CMD_ANKI_LIST_DECK = "ANKI_LIST_DECK";
     public static final String CMD_ANKI_GET_CARDS = "ANKI_GET_CARDS";
+    public static final String CMD_ANKI_SET_DECK = "ANKI_SET_DECK";
 
 
     public static final String GET_OPENID_URI = "https://api.weixin.qq.com/sns/jscode2session";
