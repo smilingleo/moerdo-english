@@ -14,6 +14,8 @@ import com.amazonaws.util.IOUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
+import leo.me.exception.ClientSideException;
+import leo.me.exception.ServerSideException;
 import leo.me.lambda.MoerdoRequest;
 import leo.me.lambda.MoerdoResponse;
 import leo.me.lambda.vo.UserInfo;
@@ -32,13 +34,13 @@ public interface Handler {
 
     default void validateResponseType(String responseType) {
         if (!("link".equalsIgnoreCase(responseType) || "data".equalsIgnoreCase(responseType))) {
-            throw new IllegalArgumentException("invalid responseType, must be either 'link' or 'data', but you give: " + responseType);
+            throw new ClientSideException("invalid responseType, must be either 'link' or 'data', but you give: " + responseType);
         }
     }
 
     default void validateWechatId(String wechatId) {
         if (Strings.isNullOrEmpty(wechatId)) {
-            throw new IllegalArgumentException("Missing required argument: wechatId");
+            throw new ClientSideException("Missing required argument: wechatId");
         }
     }
 
@@ -62,7 +64,7 @@ public interface Handler {
                 userInfo = objectMapper.readValue(jsonString, UserInfo.class);
                 userInfo.setLastLogin(now.toString());
             } catch (IOException e) {
-                throw new IllegalStateException("Invalid userInfo.json content found.", e);
+                throw new ServerSideException("Invalid userInfo.json content found.", e);
             } finally {
                 IOUtils.closeQuietly(object, log);
             }
@@ -76,11 +78,20 @@ public interface Handler {
             try {
                 s3Client.putObject(USER_BUCKET_NAME, userInfoPath, objectMapper.writeValueAsString(userInfo));
             } catch (JsonProcessingException e) {
-                throw new IllegalStateException("Failed to serialize userInfo", e);
+                throw new ServerSideException("Failed to serialize userInfo", e);
             }
         }
 
         return userInfo;
+    }
+
+    default void updateUserInfo(UserInfo userInfo) {
+        final String userInfoPath = format("%s/userInfo.json", userInfo.getWechatId());
+        try {
+            s3Client.putObject(USER_BUCKET_NAME, userInfoPath, objectMapper.writeValueAsString(userInfo));
+        } catch (JsonProcessingException e) {
+            throw new ServerSideException("Failed to serialize userInfo", e);
+        }
     }
 
     default void evaluateLimit(UserInfo userInfo) {

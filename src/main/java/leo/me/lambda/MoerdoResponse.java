@@ -1,5 +1,7 @@
 package leo.me.lambda;
 
+import leo.me.anki.AnkiDeck;
+import leo.me.anki.GetCardsResponse;
 import leo.me.lambda.vo.HistoryRecord;
 import leo.me.lambda.vo.UserInfo;
 
@@ -26,6 +28,13 @@ public class MoerdoResponse {
      * This is for get open-id call.
      */
     private String openId;
+
+    /**
+     * This is for AnkiWeb command
+     */
+    private GetCardsResponse ankiCards;
+
+    private List<AnkiDeck> ankiDecks;
 
     public MoerdoResponse() {
     }
@@ -68,5 +77,21 @@ public class MoerdoResponse {
 
     public void setHistoryRecords(List<HistoryRecord> historyRecords) {
         this.historyRecords = historyRecords;
+    }
+
+    public GetCardsResponse getAnkiCards() {
+        return ankiCards;
+    }
+
+    public void setAnkiCards(GetCardsResponse ankiCards) {
+        this.ankiCards = ankiCards;
+    }
+
+    public List<AnkiDeck> getAnkiDecks() {
+        return ankiDecks;
+    }
+
+    public void setAnkiDecks(List<AnkiDeck> ankiDecks) {
+        this.ankiDecks = ankiDecks;
     }
 }

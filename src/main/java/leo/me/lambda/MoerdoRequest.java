@@ -3,6 +3,8 @@ package leo.me.lambda;
 import static leo.me.Constants.CMD_READ_WORDS;
 import static leo.me.Constants.FREE_USER_CLASS;
 
+import leo.me.anki.BatchAnswer;
+
 import java.util.List;
 
 public class MoerdoRequest {
@@ -55,6 +57,22 @@ public class MoerdoRequest {
      * client code, used to get wechat openid, only valid in GET_OPENID
      */
     private String code;
+
+    /**
+     * deckId, used only for AnkiWeb related commands.
+     */
+    private String deckId;
+
+    /**
+     * used only for LIST_ANKI_DECKS, GET_CARDS
+     */
+    private String ankiUsername;
+    private String ankiPassword;
+
+    /**
+     * answers of the previous batch
+     */
+    private BatchAnswer batchAnswer = BatchAnswer.empty();
 
     public MoerdoRequest() {
     }
@@ -129,5 +147,37 @@ public class MoerdoRequest {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getDeckId() {
+        return deckId;
+    }
+
+    public void setDeckId(String deckId) {
+        this.deckId = deckId;
+    }
+
+    public BatchAnswer getBatchAnswer() {
+        return batchAnswer;
+    }
+
+    public void setBatchAnswer(BatchAnswer batchAnswer) {
+        this.batchAnswer = batchAnswer;
+    }
+
+    public String getAnkiUsername() {
+        return ankiUsername;
+    }
+
+    public void setAnkiUsername(String ankiUsername) {
+        this.ankiUsername = ankiUsername;
+    }
+
+    public String getAnkiPassword() {
+        return ankiPassword;
+    }
+
+    public void setAnkiPassword(String ankiPassword) {
+        this.ankiPassword = ankiPassword;
     }
 }

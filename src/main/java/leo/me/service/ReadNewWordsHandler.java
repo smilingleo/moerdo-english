@@ -55,6 +55,7 @@ public class ReadNewWordsHandler implements Handler {
 
         final PollyConfig config = new PollyConfig();
         config.setExampleLimit(request.getExampleLimit());
+
         final Polly polly = new Polly(config);
         final AnkiNoteDao dao = new AnkiNoteDao(":resource:collection.anki2");
         final AnkiNoteParser parser = new AnkiNoteParser(config);

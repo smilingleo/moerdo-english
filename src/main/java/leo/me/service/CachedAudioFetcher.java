@@ -18,6 +18,7 @@ import leo.me.exception.ServerSideException;
 import leo.me.polly.Polly;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.checkerframework.common.value.qual.IntRange;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class CachedAudioFetcher {
@@ -51,7 +53,9 @@ public class CachedAudioFetcher {
                     if (NoteItem.WORD.equals(item)
                             || NoteItem.SPELL.equals(item)
                             || NoteItem.GENERAL_CHINESE.equals(item)) {
-                        outputStream.write(loadOrRead(ankiNote, item, null));
+                        for (int i=0; i<item.getRepeat(); i++) {
+                            outputStream.write(loadOrRead(ankiNote, item, null));
+                        }
                     }
                 }
                 Stream<AnkiNoteItemGroup> stream = ankiNote.getItemGroups().stream();
@@ -68,7 +72,9 @@ public class CachedAudioFetcher {
                                 || NoteItem.INTERPRETATION_ENGLISH.equals(item)
                                 || NoteItem.EXAMPLE_CHINESE.equals(item)
                                 || NoteItem.EXAMPLE_ENGLISH.equals(item)) {
-                            outputStream.write(loadOrRead(ankiNote, item, Integer.valueOf(i)));
+                            for (int j=0; j<item.getRepeat(); j++) {
+                                outputStream.write(loadOrRead(ankiNote, item, Integer.valueOf(i)));
+                            }
                         }
                     }
                 }

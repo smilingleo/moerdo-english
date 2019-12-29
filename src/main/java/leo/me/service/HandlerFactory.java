@@ -3,6 +3,7 @@ package leo.me.service;
 import static java.lang.String.format;
 import static leo.me.Constants.*;
 
+import leo.me.anki.AnkiWebClient;
 import leo.me.exception.ClientSideException;
 import leo.me.lambda.MoerdoRequest;
 
@@ -18,6 +19,10 @@ public class HandlerFactory {
             return new UserManagementHandler();
         } else if (CMD_GET_OPENID.equalsIgnoreCase(request.getCommand())) {
             return new GetOpenIdHandler();
+        } else if (CMD_ANKI_LIST_DECK.equalsIgnoreCase(request.getCommand())) {
+            return new AnkiListDeckHandler(new AnkiWebClient());
+        } else if (CMD_ANKI_GET_CARDS.equalsIgnoreCase(request.getCommand())) {
+            return new AnkiGetCardsHandler(new AnkiWebClient());
         } else {
             throw new ClientSideException(format("不支持的命令:%s, 请通过《世凝听记》小程序调用API", request.getCommand()));
         }

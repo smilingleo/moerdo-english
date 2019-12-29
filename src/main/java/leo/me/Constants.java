@@ -10,7 +10,7 @@ public class Constants {
     public static final String USER_BUCKET_NAME = "moerdo-user";
     public static final String SYSTEM_BUCKET_NAME = "polly-anki-coca";
     public static final ZoneId BASE_ZONE_ID = ZoneId.of("Asia/Shanghai");
-    public static final Pattern OPTION_PATTERN = Pattern.compile("[gdwsceip](,[gdwsceip])*");
+    public static final Pattern OPTION_PATTERN = Pattern.compile("[gdwsceip][1-5](,[gdwsceip][1-5]?)*");
 
 
     public static final String FREE_USER_CLASS = "0";
@@ -33,6 +33,8 @@ public class Constants {
     public static final String CMD_LIST_HISTORY = "LIST_HISTORY";
     public static final String CMD_CHANGE_USER = "CHANGE_USER";
     public static final String CMD_GET_OPENID = "GET_OPENID";
+    public static final String CMD_ANKI_LIST_DECK = "ANKI_LIST_DECK";
+    public static final String CMD_ANKI_GET_CARDS = "ANKI_GET_CARDS";
 
 
     public static final String GET_OPENID_URI = "https://api.weixin.qq.com/sns/jscode2session";

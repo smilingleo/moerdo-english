@@ -27,6 +27,13 @@ public class UserInfo {
      */
     private String userClass;
 
+    /**
+     * Used to login Ankiweb.net
+     */
+    private String ankiCookie;
+
+    private String cookieExpiredOn;
+
     public UserInfo() {
     }
 
@@ -94,5 +101,21 @@ public class UserInfo {
     @JsonIgnore
     public boolean isPaidUser() {
         return Objects.equals(PAID_USER_CLASS, this.getUserClass());
+    }
+
+    public String getAnkiCookie() {
+        return ankiCookie;
+    }
+
+    public void setAnkiCookie(String ankiCookie) {
+        this.ankiCookie = ankiCookie;
+    }
+
+    public String getCookieExpiredOn() {
+        return cookieExpiredOn;
+    }
+
+    public void setCookieExpiredOn(String cookieExpiredOn) {
+        this.cookieExpiredOn = cookieExpiredOn;
     }
 }
