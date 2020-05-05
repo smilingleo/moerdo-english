@@ -19,8 +19,8 @@ public class Constants {
     public static final Set<String> VALID_USER_CLASS = ImmutableSet.of(FREE_USER_CLASS, PAID_USER_CLASS, ADMIN_USER_CLASS);
 
 
-    public static final int FREE_USER_POINT_LIMIT = 25;
-    public static final int FREE_USER_WORDS_LIMIT = 10;
+    public static final int FREE_USER_POINT_LIMIT = 45;
+    public static final int FREE_USER_WORDS_LIMIT = 20;
     public static final int FREE_USER_TEXT_LIMIT = 1000;
 
     public static final int PAID_USER_POINT_LIMIT = 100;
