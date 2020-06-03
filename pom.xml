@@ -49,6 +49,13 @@
             <artifactId>okhttp</artifactId>
             <version>3.14.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-customsearch</artifactId>
+            <version>v1-rev51-1.22.0</version>
+        </dependency>
+
         <!-- for cli -->
         <dependency>
             <groupId>info.picocli</groupId>

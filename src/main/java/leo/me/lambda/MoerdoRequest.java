@@ -23,6 +23,8 @@ public class MoerdoRequest {
     /**
      * Vocabulary mode.
      * Must be comma separated english word.
+     *
+     * Also used in GetImages command.
      */
     private List<String> words;
 

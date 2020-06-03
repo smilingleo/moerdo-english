@@ -6,6 +6,7 @@ import leo.me.lambda.vo.HistoryRecord;
 import leo.me.lambda.vo.UserInfo;
 
 import java.util.List;
+import java.util.Map;
 
 public class MoerdoResponse {
 
@@ -35,6 +36,11 @@ public class MoerdoResponse {
     private GetCardsResponse ankiCards;
 
     private List<AnkiDeck> ankiDecks;
+
+    /**
+     * This is for Get Images Command
+     */
+    private List<Map<String, String>> links;
 
     public MoerdoResponse() {
     }
@@ -93,5 +99,13 @@ public class MoerdoResponse {
 
     public void setAnkiDecks(List<AnkiDeck> ankiDecks) {
         this.ankiDecks = ankiDecks;
+    }
+
+    public List<Map<String, String>> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Map<String, String>> links) {
+        this.links = links;
     }
 }

@@ -1,6 +1,8 @@
 package leo.me.service;
 
 import static java.lang.String.format;
+import static leo.me.Constants.APP_ID;
+import static leo.me.Constants.APP_SECRET;
 import static leo.me.Constants.GET_OPENID_URI;
 
 import com.amazonaws.jmespath.ObjectMapperSingleton;
@@ -23,9 +25,7 @@ public class GetOpenIdHandler implements Handler {
         OkHttpClient client = new OkHttpClient();
         MoerdoResponse rtn = new MoerdoResponse();
 
-        String appId = System.getenv("APP_ID");
-        String appSecret = System.getenv("APP_SECRET");
-        if (Strings.isNullOrEmpty(appId) || Strings.isNullOrEmpty(appSecret)) {
+        if (Strings.isNullOrEmpty(APP_ID) || Strings.isNullOrEmpty(APP_SECRET)) {
             throw new ServerSideException("Environment variables APP_ID, APP_SECRET are missing.");
         }
 
@@ -34,7 +34,7 @@ public class GetOpenIdHandler implements Handler {
             throw new ClientSideException("请求中缺失必需参数'code'.");
         }
 
-        String url = format("%s?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", GET_OPENID_URI, appId, appSecret, code);
+        String url = format("%s?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", GET_OPENID_URI, APP_ID, APP_SECRET, code);
         Request httpRequest = new Request.Builder()
                 .url(url)
                 .build();
