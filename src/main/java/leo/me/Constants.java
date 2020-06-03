@@ -36,6 +36,11 @@ public class Constants {
     public static final String CMD_ANKI_LIST_DECK = "ANKI_LIST_DECK";
     public static final String CMD_ANKI_GET_CARDS = "ANKI_GET_CARDS";
     public static final String CMD_ANKI_SET_DECK = "ANKI_SET_DECK";
+    public static final String CMD_GET_IMAGES = "GET_IMAGES";
+
+
+    public static final String CSE_DEVELOPER_KEY = "AIzaSyB-b1A-n6pexojWLvGKQX00XyzL8GsF7QE";
+    public static final String CSE_CX = "000801574035462353467:oipoh4dog84";
 
 
     public static final String GET_OPENID_URI = "https://api.weixin.qq.com/sns/jscode2session";

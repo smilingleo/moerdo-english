@@ -25,6 +25,8 @@ public class HandlerFactory {
             return new AnkiGetCardsHandler(new AnkiWebClient());
         } else if (CMD_ANKI_SET_DECK.equalsIgnoreCase(request.getCommand())) {
             return new AnkiSetDeckHandler(new AnkiWebClient());
+        } else if (CMD_GET_IMAGES.equals(request.getCommand())) {
+            return new GetImageHandler();
         } else {
             throw new ClientSideException(format("不支持的命令:%s, 请通过《世凝听记》小程序调用API", request.getCommand()));
         }
