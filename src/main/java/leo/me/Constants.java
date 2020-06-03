@@ -39,8 +39,13 @@ public class Constants {
     public static final String CMD_GET_IMAGES = "GET_IMAGES";
 
 
-    public static final String CSE_DEVELOPER_KEY = "AIzaSyB-b1A-n6pexojWLvGKQX00XyzL8GsF7QE";
-    public static final String CSE_CX = "000801574035462353467:oipoh4dog84";
+    // Google CSE Api key and CX config
+    public static final String CSE_DEVELOPER_KEY = System.getenv("G_API_DEVELOPER_KEY");
+    public static final String CSE_CX = System.getenv("G_API_CX");
+
+    // Wechat miniprogram App Id and Secret
+    public static final String APP_ID = System.getenv("APP_ID");
+    public static final String APP_SECRET = System.getenv("APP_SECRET");
 
 
     public static final String GET_OPENID_URI = "https://api.weixin.qq.com/sns/jscode2session";

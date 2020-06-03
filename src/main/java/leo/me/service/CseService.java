@@ -56,7 +56,8 @@ public class CseService {
             list.setCx(cx);
             list.setFileType("jpg");
             list.setSearchType("image");
-            list.setNum(10L);
+            // return 9 images, to have a 3x3 layout.
+            list.setNum(9L);
             Search results = list.execute();
             items = results.getItems();
         } catch (IOException e) {
@@ -64,15 +65,4 @@ public class CseService {
         }
         return items;
     }
-
-    public static void main(String []args) {
-        List<Result> items = new CseService("AIzaSyB-b1A-n6pexojWLvGKQX00XyzL8GsF7QE", "000801574035462353467:oipoh4dog84").searchImages("man hero");
-
-        System.out.println(items.size() + " result(s):");
-        for (Result result : items) {
-            System.out.println("\t - Title:" + result.getTitle());
-            System.out.println("\t   Url:" + result.getLink());
-        }
-    }
-
 }
