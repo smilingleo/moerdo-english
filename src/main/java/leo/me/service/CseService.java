@@ -56,8 +56,7 @@ public class CseService {
             list.setCx(cx);
             list.setFileType("jpg");
             list.setSearchType("image");
-            // return 9 images, to have a 3x3 layout.
-            list.setNum(9L);
+            list.setNum(20L);
             Search results = list.execute();
             items = results.getItems();
         } catch (IOException e) {
