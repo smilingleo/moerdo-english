@@ -1,6 +1,7 @@
 package leo.me.service;
 
 import com.google.common.base.Strings;
+import leo.me.anki.AnkiCookies;
 import leo.me.anki.AnkiWebClient;
 import leo.me.exception.ServerSideException;
 import leo.me.lambda.MoerdoRequest;
@@ -32,13 +33,15 @@ public abstract class AbstractAnkiHandler implements Handler {
     public UserInfo setOrRefreshAnkiCookie(MoerdoRequest request) {
         UserInfo userInfo = refreshUserInfo(request);
 
+        // cookie for `ankiuser.net`
         String ankiCookie = userInfo.getAnkiCookie();
 
         // setOrRefreshCookie
         if (Strings.isNullOrEmpty(ankiCookie) || ankiCookieExpired(userInfo.getCookieExpiredOn())) {
-            String cookieStr = client.getCookie(request.getAnkiUsername(), request.getAnkiPassword());
-            ankiCookie = parseCookie(cookieStr);
+            AnkiCookies cookie = client.getCookie(request.getAnkiUsername(), request.getAnkiPassword());
+            ankiCookie = parseCookie(cookie.getAnkiUserCookie());
             userInfo.setAnkiCookie(ankiCookie);
+            userInfo.setAnkiWebCookie(parseCookie(cookie.getAnkiWebCookie()));
             // the official site set-cookie: Max-Age=2592000; (30 days)
             String expiredOn = LocalDateTime.now().plusDays(25).toString();
             userInfo.setCookieExpiredOn(expiredOn);

@@ -28,9 +28,11 @@ public class UserInfo {
     private String userClass;
 
     /**
-     * Used to login Ankiweb.net
+     * Used to login AnkiUser.net
      */
     private String ankiCookie;
+
+    private String ankiWebCookie;
 
     private String cookieExpiredOn;
 
@@ -109,6 +111,14 @@ public class UserInfo {
 
     public void setAnkiCookie(String ankiCookie) {
         this.ankiCookie = ankiCookie;
+    }
+
+    public String getAnkiWebCookie() {
+        return ankiWebCookie;
+    }
+
+    public void setAnkiWebCookie(String ankiWebCookie) {
+        this.ankiWebCookie = ankiWebCookie;
     }
 
     public String getCookieExpiredOn() {

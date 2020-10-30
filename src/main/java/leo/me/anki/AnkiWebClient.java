@@ -25,10 +25,14 @@ import java.util.stream.Collectors;
 public class AnkiWebClient {
 
     private static final String LOGIN_URL = "https://ankiweb.net/account/login";
+    private static final String USER_AUTH_URL = "https://ankiweb.net/account/userAuth?rt=/study/";
     private static final String LIST_DECK_URL = "https://ankiweb.net/decks/";
     private static final String GET_CARDS_URL = "https://ankiuser.net/study/getCards";
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    private OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+            .followRedirects(false)
+            .followSslRedirects(false).build();
     /**
      * List all the decks of current user.
      *
@@ -36,20 +40,15 @@ public class AnkiWebClient {
      * @return
      */
     public List<AnkiDeck> listDecks(String ankiCookie) {
-        OkHttpClient client = new OkHttpClient();
         Request listReq = new Request.Builder()
                 .url(LIST_DECK_URL)
                 .get()
-                .header(":authority:", "ankiweb.net")
-                .header(":method:", "GET")
-                .header(":path:", "/decks/")
-                .header(":scheme:", "https")
-                .header("cookie", ankiCookie)
+                .header("Cookie", ankiCookie)
                 .build();
 
         List<AnkiDeck> decks = new LinkedList<>();
 
-        try (Response response = client.newCall(listReq).execute()) {
+        try (Response response = okHttpClient.newCall(listReq).execute()) {
             String listPageHtml = response.body().string();
             Document doc = Jsoup.parse(listPageHtml);
             Elements elements = doc.select("main.container > div.container-fluid > div.row");
@@ -81,14 +80,9 @@ public class AnkiWebClient {
      */
     public void selectDeck(String ankiCookie, String deckId) {
         OkHttpClient client = new OkHttpClient();
-
         Request selectDeckReq = new Request.Builder()
                 .url(format("%sselect/%s", LIST_DECK_URL, deckId))
                 .post(RequestBody.create(null, new byte[0]))
-                .header(":authority:", "ankiweb.net")
-                .header(":method:", "POST")
-                .header(":path:", format("/decks/select/%s", deckId))
-                .header(":scheme:", "https")
                 .header("x-requested-with", "XMLHttpRequest")
                 .header("cookie", ankiCookie)
                 .build();
@@ -98,7 +92,7 @@ public class AnkiWebClient {
                 throw new ServerSideException("选择卡组失败, statusCode=" + response.code());
             }
         } catch (IOException e) {
-            throw new ServerSideException("访问Ankiweb站点失败，请查看ankiweb.net是否可用");
+            throw new ServerSideException("访问Ankiweb站点失败，请查看ankiweb.net是否可用", e);
         }
 
     }
@@ -115,10 +109,6 @@ public class AnkiWebClient {
         Request getCardsReq = new Request.Builder()
                 .url(GET_CARDS_URL)
                 .post(body)
-                .header(":authority:", "ankiuser.net")
-                .header(":method:", "POST")
-                .header(":path:", "/study/getCards")
-                .header(":scheme:", "https")
                 .header("x-requested-with", "XMLHttpRequest")
                 .header("cookie", ankiCookie)
                 .build();
@@ -151,17 +141,14 @@ public class AnkiWebClient {
                 throw new ServerSideException("登录Ankiweb站点失败, statusCode=" + response.code());
             }
         } catch (IOException e) {
-            throw new ServerSideException("访问Ankiweb站点失败，请查看ankiweb.net是否可用");
+            throw new ServerSideException("从Ankiweb站点读取卡牌失败，请查看ankiweb.net是否可用", e);
         }
 
     }
 
-    public String getCookie(String ankiUser, String password) {
-        OkHttpClient client = new OkHttpClient().newBuilder()
-                .followRedirects(false)
-                .followSslRedirects(false).build();
+    public AnkiCookies getCookie(String ankiUser, String password) {
 
-        final String csrfToken = getCsrfToken(client);
+        final String csrfToken = getCsrfToken();
 
         MultipartBody body = new Builder()
                 .setType(MultipartBody.FORM)
@@ -173,45 +160,68 @@ public class AnkiWebClient {
         Request loginReq = new Request.Builder()
                 .url(LOGIN_URL)
                 .post(body)
-                .header(":authority:", "ankiweb.net")
-                .header(":method:", "POST")
-                .header(":path:", "/account/login")
-                .header(":scheme:", "https")
-                .header("cookie", "ankiweb=login")
+                .header("Cookie", "ankiweb=login")
                 .build();
-
-        try (Response response = client.newCall(loginReq).execute()) {
+        try (Response response = okHttpClient.newCall(loginReq).execute()) {
             if (response.code() == 302) {
-                String cookieStr = response.header("set-cookie");
-                return cookieStr;
+                String ankiwebCookie = response.header("set-cookie");
+
+                Request authReq = new Request.Builder()
+                        .url(USER_AUTH_URL)
+                        .header("Cookie", ankiwebCookie)
+                        .get()
+                        .build();
+
+                try (Response authResp = okHttpClient.newCall(authReq).execute()) {
+                    if (authResp.code() == 302) {
+                        String ankiUserAuthUrl = authResp.header("location");
+
+                        Request userAuthReq = new Request.Builder()
+                                .url(ankiUserAuthUrl)
+                                .header("Cookie", "ankiweb=login")
+                                .get()
+                                .build();
+                        try (Response userAuthResp = okHttpClient.newCall(userAuthReq).execute()) {
+                            if (userAuthResp.code() == 302) {
+                                String ankiuserCookie = userAuthResp.header("set-cookie");
+                                return new AnkiCookies(ankiwebCookie, ankiuserCookie);
+                            } else {
+                                throw new ServerSideException("ankiuser身份验证失败");
+                            }
+                        }
+
+                    } else {
+                        throw new ServerSideException("ankiweb身份验证失败");
+                    }
+                }
             } else {
                 throw new ServerSideException("登录Ankiweb站点失败, statusCode=" + response.code());
             }
         } catch (IOException e) {
-            throw new ServerSideException("访问Ankiweb站点失败，请查看ankiweb.net是否可用");
+            throw new ServerSideException("访问Ankiweb站点失败，请查看ankiweb.net是否可用", e);
         }
     }
 
-    private String getCsrfToken(OkHttpClient client) {
+    private String getCsrfToken() {
         Request loginReq = new Request.Builder()
                 .url(LOGIN_URL)
                 .get()
                 .build();
-        try (Response response = client.newCall(loginReq).execute()) {
+        try (Response response = okHttpClient.newCall(loginReq).execute()) {
             String loginPageHtml = response.body().string();
             Document doc = Jsoup.parse(loginPageHtml);
             Element csrfTokenEle = doc.selectFirst("form#form > input[name=csrf_token]");
             return csrfTokenEle.attributes().get("value");
         } catch (IOException e) {
-            throw new ServerSideException("访问Ankiweb站点失败，请查看ankiweb.net是否可用");
+            throw new ServerSideException("获取Ankiweb站点Csrf token失败，请查看ankiweb.net是否可用");
         }
     }
 
     public static void main(String[] args) {
         AnkiWebClient client = new AnkiWebClient();
-//        List<AnkiDeck> decks = client.listDecks("ankiweb=s1RZHDm9h2guAL4F");
-//        out.println(decks.size());
-//        client.selectDeck("ankiweb=s1RZHDm9h2guAL4F", "did1535418586971");
-        client.getCards("ankiweb=s1RZHDm9h2guAL4F", BatchAnswer.empty());
+        AnkiCookies cookie = client.getCookie("leo.trash.reg@gmail.com", "");
+        client.selectDeck(cookie.getAnkiWebCookie(), "did1535418586971");
+        GetCardsResponse cards = client.getCards(cookie.getAnkiUserCookie(), BatchAnswer.empty());
+        System.out.println(cards.getCards().size());
     }
 }
