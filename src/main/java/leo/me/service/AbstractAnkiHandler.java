@@ -37,7 +37,7 @@ public abstract class AbstractAnkiHandler implements Handler {
         String ankiCookie = userInfo.getAnkiCookie();
 
         // setOrRefreshCookie
-        if (Strings.isNullOrEmpty(ankiCookie) || ankiCookieExpired(userInfo.getCookieExpiredOn())) {
+        if (Strings.isNullOrEmpty(ankiCookie) || Strings.isNullOrEmpty(userInfo.getAnkiWebCookie()) || ankiCookieExpired(userInfo.getCookieExpiredOn())) {
             AnkiCookies cookie = client.getCookie(request.getAnkiUsername(), request.getAnkiPassword());
             ankiCookie = parseCookie(cookie.getAnkiUserCookie());
             userInfo.setAnkiCookie(ankiCookie);

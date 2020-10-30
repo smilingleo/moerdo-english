@@ -98,5 +98,4 @@ public interface Handler {
         // enforce the usage policy
         (new UserUsagePolicy()).evaluate(userInfo, s3Client);
     }
-
 }

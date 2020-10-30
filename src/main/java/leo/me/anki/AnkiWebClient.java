@@ -15,19 +15,27 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
 
 public class AnkiWebClient {
 
     private static final String LOGIN_URL = "https://ankiweb.net/account/login";
     private static final String USER_AUTH_URL = "https://ankiweb.net/account/userAuth?rt=/study/";
     private static final String LIST_DECK_URL = "https://ankiweb.net/decks/";
+
     private static final String GET_CARDS_URL = "https://ankiuser.net/study/getCards";
+    private static final String GET_MEDIA_URL = "https://ankiuser.net/study/media/";
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
@@ -146,6 +154,25 @@ public class AnkiWebClient {
 
     }
 
+    public String loadImageData(String ankiUserCookie, String fileName) {
+        OkHttpClient client = new OkHttpClient();
+        Request loadImgReq = new Request.Builder()
+                .url(GET_MEDIA_URL + fileName)
+                .header("cookie", ankiUserCookie)
+                .get()
+                .build();
+
+        try (Response response = client.newCall(loadImgReq).execute()) {
+            byte[] fileContent = response.body().bytes();
+            String encodedString = Base64.getEncoder().encodeToString(fileContent);
+            return String.format("data:image/%s;base64, %s", fileName.substring(fileName.lastIndexOf(".") + 1), encodedString);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServerSideException("加载图片失败。");
+        }
+
+    }
+
     public AnkiCookies getCookie(String ankiUser, String password) {
 
         final String csrfToken = getCsrfToken();
@@ -219,9 +246,12 @@ public class AnkiWebClient {
 
     public static void main(String[] args) {
         AnkiWebClient client = new AnkiWebClient();
-        AnkiCookies cookie = client.getCookie("leo.trash.reg@gmail.com", "");
-        client.selectDeck(cookie.getAnkiWebCookie(), "did1535418586971");
-        GetCardsResponse cards = client.getCards(cookie.getAnkiUserCookie(), BatchAnswer.empty());
-        System.out.println(cards.getCards().size());
+        String userCookie = "ankiweb=eyJrIjogInMxUlpIRG05aDJndUFMNEYiLCAiYyI6IDJ9.iZyn1EtpFMHM2X7NIZLUJHi9fgpwQgCBhbJmaAIfYPg";
+        String imgData = client.loadImageData(userCookie, "mural.jpeg");
+        System.out.println(imgData);
+//        AnkiCookies cookie = client.getCookie("leo.trash.reg@gmail.com", "");
+//        client.selectDeck(cookie.getAnkiWebCookie(), "did1535418586971");
+//        GetCardsResponse cards = client.getCards(cookie.getAnkiUserCookie(), BatchAnswer.empty());
+//        System.out.println(cards.getCards().size());
     }
 }

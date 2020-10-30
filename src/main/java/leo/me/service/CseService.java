@@ -56,7 +56,7 @@ public class CseService {
             list.setCx(cx);
             list.setFileType("jpg");
             list.setSearchType("image");
-            list.setNum(20L);
+            list.setNum(10L);
             Search results = list.execute();
             items = results.getItems();
         } catch (IOException e) {
