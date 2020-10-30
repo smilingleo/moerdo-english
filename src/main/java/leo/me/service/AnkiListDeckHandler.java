@@ -21,7 +21,7 @@ public class AnkiListDeckHandler extends AbstractAnkiHandler {
     public MoerdoResponse handle(MoerdoRequest request) {
         UserInfo userInfo = setOrRefreshAnkiCookie(request);
 
-        List<AnkiDeck> decks = client.listDecks(userInfo.getAnkiCookie());
+        List<AnkiDeck> decks = client.listDecks(userInfo.getAnkiWebCookie());
 
         MoerdoResponse response = new MoerdoResponse();
         response.setUserInfo(userInfo);

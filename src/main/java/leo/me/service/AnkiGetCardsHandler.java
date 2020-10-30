@@ -21,7 +21,7 @@ public class AnkiGetCardsHandler extends AbstractAnkiHandler {
 
         final String ankiCookie = userInfo.getAnkiCookie();
 
-        client.selectDeck(ankiCookie, request.getDeckId());
+        client.selectDeck(userInfo.getAnkiWebCookie(), request.getDeckId());
         GetCardsResponse ankiResponse = client.getCards(ankiCookie, request.getBatchAnswer());
 
         MoerdoResponse response = new MoerdoResponse();

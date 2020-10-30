@@ -17,7 +17,7 @@ public class AnkiSetDeckHandler extends AbstractAnkiHandler {
     @Override
     public MoerdoResponse handle(MoerdoRequest request) {
         UserInfo userInfo = setOrRefreshAnkiCookie(request);
-        client.selectDeck(userInfo.getAnkiCookie(), request.getDeckId());
+        client.selectDeck(userInfo.getAnkiWebCookie(), request.getDeckId());
         final MoerdoResponse response = new MoerdoResponse();
         response.setUserInfo(userInfo);
         return response;
