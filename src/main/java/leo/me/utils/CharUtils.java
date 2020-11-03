@@ -77,4 +77,8 @@ public class CharUtils {
         }
         return sb.toString();
     }
+
+    public static String encodeBucketName(String word) {
+        return word.replaceAll("\\s", "_").toLowerCase();
+    }
 }

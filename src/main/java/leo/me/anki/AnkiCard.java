@@ -8,6 +8,9 @@ public class AnkiCard {
     private long noteId;
     private String front;
     private String backend;
+
+    private String imageData;
+
     /**
      * 0: new word, 1: re-study, 2: to review
      */
@@ -19,6 +22,16 @@ public class AnkiCard {
         this.noteId = noteId;
         this.front = front;
         this.backend = backend;
+        this.group = group;
+        this.repeats = repeats;
+    }
+
+    public AnkiCard(long cardId, long noteId, String front, String backend, String imageData, int group, List<String> repeats) {
+        this.cardId = cardId;
+        this.noteId = noteId;
+        this.front = front;
+        this.backend = backend;
+        this.imageData = imageData;
         this.group = group;
         this.repeats = repeats;
     }
@@ -72,5 +85,13 @@ public class AnkiCard {
 
     public void setGroup(int group) {
         this.group = group;
+    }
+
+    public String getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(String imageData) {
+        this.imageData = imageData;
     }
 }

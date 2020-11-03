@@ -2,6 +2,7 @@ package leo.me.service;
 
 import static leo.me.Constants.DRAWING_BUCKET_NAME;
 import static leo.me.Constants.USER_BUCKET_NAME;
+import static leo.me.utils.CharUtils.encodeBucketName;
 
 import leo.me.lambda.MoerdoRequest;
 import leo.me.lambda.MoerdoResponse;
@@ -43,7 +44,4 @@ public class FileUploadHandler implements Handler {
         return response;
     }
 
-    private String encodeBucketName(String word) {
-        return word.replaceAll("\\s", "_").toLowerCase();
-    }
 }
