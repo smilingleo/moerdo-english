@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 public class Constants {
     public static final String USER_BUCKET_NAME = "moerdo-user";
+    public static final String DRAWING_BUCKET_NAME = "drawing";
     public static final String SYSTEM_BUCKET_NAME = "polly-anki-coca";
     public static final ZoneId BASE_ZONE_ID = ZoneId.of("Asia/Shanghai");
     public static final Pattern OPTION_PATTERN = Pattern.compile("[gdwsceip][1-5](,[gdwsceip][1-5]?)*");
@@ -37,6 +38,8 @@ public class Constants {
     public static final String CMD_ANKI_GET_CARDS = "ANKI_GET_CARDS";
     public static final String CMD_ANKI_SET_DECK = "ANKI_SET_DECK";
     public static final String CMD_GET_IMAGES = "GET_IMAGES";
+    public static final String CMD_GET_RELATED_WORDS = "GET_RELATED";
+    public static final String CMD_UPLOAD_IMAGE = "UPLOAD_IMAGE";
 
 
     // Google CSE Api key and CX config

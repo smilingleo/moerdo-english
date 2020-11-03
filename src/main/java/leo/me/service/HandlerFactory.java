@@ -27,6 +27,10 @@ public class HandlerFactory {
             return new AnkiSetDeckHandler(new AnkiWebClient());
         } else if (CMD_GET_IMAGES.equals(request.getCommand())) {
             return new GetImageHandler();
+        } else if (CMD_GET_RELATED_WORDS.equals(request.getCommand())) {
+            return new GetRelatedWordsHandler();
+        } else if (CMD_UPLOAD_IMAGE.equals(request.getCommand())) {
+            return new FileUploadHandler();
         } else {
             throw new ClientSideException(format("不支持的命令:%s, 请通过《世凝听记》小程序调用API", request.getCommand()));
         }

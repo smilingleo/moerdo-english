@@ -42,6 +42,11 @@ public class MoerdoResponse {
      */
     private List<Map<String, String>> links;
 
+    /**
+     * This is for Get Related Words Command
+     */
+    private String imageContent;
+
     public MoerdoResponse() {
     }
 
@@ -107,5 +112,13 @@ public class MoerdoResponse {
 
     public void setLinks(List<Map<String, String>> links) {
         this.links = links;
+    }
+
+    public String getImageContent() {
+        return imageContent;
+    }
+
+    public void setImageContent(String imageContent) {
+        this.imageContent = imageContent;
     }
 }

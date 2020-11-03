@@ -44,6 +44,14 @@ public class MoerdoRequest {
      */
     private String text;
 
+
+    /**
+     * Image content data (base64 encoded)
+     * Only for CMD_SAVE_IMAGE
+     *
+     */
+    private String imageContent;
+
     /**
      * valid options: link, data
      */
@@ -125,6 +133,14 @@ public class MoerdoRequest {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getImageContent() {
+        return imageContent;
+    }
+
+    public void setImageContent(String imageContent) {
+        this.imageContent = imageContent;
     }
 
     public String getCommand() {
