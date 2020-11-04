@@ -30,7 +30,7 @@ public class AnkiWebClient {
     private static final String LIST_DECK_URL = "https://ankiweb.net/decks/";
 
     private static final String GET_CARDS_URL = "https://ankiuser.net/study/getCards";
-    private static final String GET_MEDIA_URL = "https://ankiuser.net/study/media/";
+    public static final String GET_MEDIA_URL = "https://ankiuser.net/study/media/";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -150,25 +150,6 @@ public class AnkiWebClient {
 
     }
 
-    public String loadImageData(String ankiUserCookie, String fileName) {
-        OkHttpClient client = new OkHttpClient();
-        Request loadImgReq = new Request.Builder()
-                .url(GET_MEDIA_URL + fileName)
-                .header("cookie", ankiUserCookie)
-                .get()
-                .build();
-
-        try (Response response = client.newCall(loadImgReq).execute()) {
-            byte[] fileContent = response.body().bytes();
-            String encodedString = Base64.getEncoder().encodeToString(fileContent);
-            return String.format("data:image/%s;base64, %s", fileName.substring(fileName.lastIndexOf(".") + 1), encodedString);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new ServerSideException("加载图片失败。");
-        }
-
-    }
-
     public AnkiCookies getCookie(String ankiUser, String password) {
 
         final String csrfToken = getCsrfToken();
@@ -243,8 +224,6 @@ public class AnkiWebClient {
     public static void main(String[] args) {
         AnkiWebClient client = new AnkiWebClient();
         String userCookie = "ankiweb=eyJrIjogInMxUlpIRG05aDJndUFMNEYiLCAiYyI6IDJ9.iZyn1EtpFMHM2X7NIZLUJHi9fgpwQgCBhbJmaAIfYPg";
-        String imgData = client.loadImageData(userCookie, "mural.jpeg");
-        System.out.println(imgData);
 //        AnkiCookies cookie = client.getCookie("leo.trash.reg@gmail.com", "");
 //        client.selectDeck(cookie.getAnkiWebCookie(), "did1535418586971");
 //        GetCardsResponse cards = client.getCards(cookie.getAnkiUserCookie(), BatchAnswer.empty());

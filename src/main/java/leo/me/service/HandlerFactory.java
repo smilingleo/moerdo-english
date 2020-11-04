@@ -31,6 +31,8 @@ public class HandlerFactory {
             return new GetRelatedWordsHandler();
         } else if (CMD_UPLOAD_IMAGE.equals(request.getCommand())) {
             return new FileUploadHandler();
+        } else if (CMD_USE_IMAGE.equals(request.getCommand())) {
+            return new UseImageHandler();
         } else {
             throw new ClientSideException(format("不支持的命令:%s, 请通过《世凝听记》小程序调用API", request.getCommand()));
         }

@@ -40,6 +40,7 @@ public class Constants {
     public static final String CMD_GET_IMAGES = "GET_IMAGES";
     public static final String CMD_GET_RELATED_WORDS = "GET_RELATED";
     public static final String CMD_UPLOAD_IMAGE = "UPLOAD_IMAGE";
+    public static final String CMD_USE_IMAGE = "USE_IMAGE";
 
 
     // Google CSE Api key and CX config

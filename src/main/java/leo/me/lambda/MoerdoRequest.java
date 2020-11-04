@@ -53,6 +53,12 @@ public class MoerdoRequest {
     private String imageContent;
 
     /**
+     * Image url of selected image
+     * Only for CMD_USE_IMAGE
+     */
+    private String imageUrl;
+
+    /**
      * valid options: link, data
      */
     private String responseType = "link";
@@ -141,6 +147,14 @@ public class MoerdoRequest {
 
     public void setImageContent(String imageContent) {
         this.imageContent = imageContent;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getCommand() {

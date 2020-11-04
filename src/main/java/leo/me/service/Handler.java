@@ -19,11 +19,19 @@ import leo.me.exception.ServerSideException;
 import leo.me.lambda.MoerdoRequest;
 import leo.me.lambda.MoerdoResponse;
 import leo.me.lambda.vo.UserInfo;
+import okhttp3.Headers;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Request.Builder;
+import okhttp3.Response;
+import okhttp3.internal.http2.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Base64;
 
 public interface Handler {
     Log log = LogFactory.getLog(Handler.class);
@@ -97,5 +105,39 @@ public interface Handler {
     default void evaluateLimit(UserInfo userInfo) {
         // enforce the usage policy
         (new UserUsagePolicy()).evaluate(userInfo, s3Client);
+    }
+
+    default String loadImage(String url, Header... headers) {
+        String ext = url.substring(url.lastIndexOf(".") + 1).toLowerCase();
+        if (ext.length() == 0) {
+            throw new ServerSideException("图片地址非法，或者无法解析图片格式." + url);
+        }
+
+        if (ext.length() >= 4 && ext.startsWith("jpeg")) {
+            ext = "jpeg";
+        } else if (ext.length() >= 3){
+            ext = ext.substring(0, 3);
+        }
+
+        OkHttpClient client = new OkHttpClient();
+
+        Builder builder = new Builder()
+                .url(url);
+        if (headers != null) {
+            Arrays.asList(headers).forEach(header -> builder.header(header.name.utf8(), header.value.utf8()));
+        }
+        Request loadImgReq = builder
+                .get()
+                .build();
+
+        try (Response response = client.newCall(loadImgReq).execute()) {
+            byte[] fileContent = response.body().bytes();
+            String encodedString = Base64.getEncoder().encodeToString(fileContent);
+            return String.format("data:image/%s;base64, %s", ext, encodedString);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServerSideException("加载图片失败。");
+        }
+
     }
 }
