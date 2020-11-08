@@ -41,6 +41,7 @@ public class Constants {
     public static final String CMD_GET_RELATED_WORDS = "GET_RELATED";
     public static final String CMD_UPLOAD_IMAGE = "UPLOAD_IMAGE";
     public static final String CMD_USE_IMAGE = "USE_IMAGE";
+    public static final String CMD_QUERY_CARDS = "QUERY_CARDS";
 
 
     // Google CSE Api key and CX config
@@ -55,4 +56,6 @@ public class Constants {
     public static final String GET_OPENID_URI = "https://api.weixin.qq.com/sns/jscode2session";
 
     public static final int LIMIT_HISTORY_BY_MONTH = 6;
+    // Pattern.DOTALL or (?s) tells Java to allow the dot to match newline characters, too.
+    public final static Pattern IMG_PATTERN = Pattern.compile(".*<img\\s+[^>]*src=\"([\\w\\-.]+)\"[^>]*/?>.*", Pattern.DOTALL);
 }

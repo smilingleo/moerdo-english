@@ -1,19 +1,26 @@
 package leo.me.service;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.lang.String.format;
 import static leo.me.Constants.BASE_ZONE_ID;
+import static leo.me.Constants.DRAWING_BUCKET_NAME;
 import static leo.me.Constants.FREE_USER_CLASS;
 import static leo.me.Constants.USER_BUCKET_NAME;
+import static leo.me.anki.AnkiWebClient.GET_MEDIA_URL;
+import static leo.me.utils.CharUtils.encodeBucketName;
 
 import com.amazonaws.jmespath.ObjectMapperSingleton;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.IOUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
+import leo.me.Constants;
+import leo.me.anki.GetCardsResponse;
 import leo.me.exception.ClientSideException;
 import leo.me.exception.ServerSideException;
 import leo.me.lambda.MoerdoRequest;
@@ -27,11 +34,16 @@ import okhttp3.Response;
 import okhttp3.internal.http2.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.regex.Matcher;
 
 public interface Handler {
     Log log = LogFactory.getLog(Handler.class);
@@ -139,5 +151,75 @@ public interface Handler {
             throw new ServerSideException("加载图片失败。");
         }
 
+    }
+
+    default void transformImageTag(GetCardsResponse ankiResponse, String cookie) {
+        ankiResponse.getCards().forEach(ankiCard -> {
+            String front = ankiCard.getFront();
+            String backend = ankiCard.getBackend();
+
+            Matcher frontMatcher = Constants.IMG_PATTERN.matcher(front);
+            if (frontMatcher.matches()) {
+                String imageName = frontMatcher.group(1);
+                String imageContent = loadImage(GET_MEDIA_URL + imageName, new Header("cookie", cookie));
+                front = front.replace(imageName, imageContent);
+                ankiCard.setFront(front);
+            }
+
+            Matcher backendMatcher = Constants.IMG_PATTERN.matcher(backend);
+            if (backendMatcher.matches()) {
+                String imageName = backendMatcher.group(1);
+                String imageContent = loadImage(GET_MEDIA_URL + imageName, new Header("cookie", cookie));
+                backend = backend.replace(imageName, imageContent);
+                ankiCard.setBackend(backend);
+            }
+        });
+    }
+
+    default void complementMnemonicImages(GetCardsResponse ankiResponse, String wechatId) {
+        ankiResponse.getCards().forEach(ankiCard -> {
+            String word = parseWord(ankiCard.getFront());
+            String keyName = String.format("%s/%s/%s", DRAWING_BUCKET_NAME, encodeBucketName(word), wechatId);
+            if (!isNullOrEmpty(word)) {
+                try {
+                    String imageContent = s3Client.getObjectAsString(USER_BUCKET_NAME, keyName);
+                    if (!isNullOrEmpty(imageContent)) {
+                        ankiCard.setImageData(imageContent);
+                    }
+                } catch (AmazonS3Exception e) {
+                    System.out.println("failed to load image file:" + keyName);
+                    if (!"NoSuchKey".equals(e.getErrorCode())) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+    /**
+     * Parse the front HTML dom, and traverse the dom to find the word.
+     *
+     * @param front
+     * @return
+     */
+    static String parseWord(String front) {
+        Document doc = Jsoup.parse("<div>" + front + "</div>");
+        return findWord(doc.getAllElements());
+    }
+
+    static String findWord(Elements elements) {
+        for (Element element : elements) {
+            String txt = element.ownText();
+            if (!isNullOrEmpty(txt) && txt.trim().charAt(0) >= 'A' && txt.trim().charAt(0) <= 'z') {
+                return txt.trim();
+            }
+
+            if (element.children().size() > 0) {
+                String text = findWord(element.children());
+                if (!isNullOrEmpty(text)) {
+                    return text;
+                }
+            }
+        }
+        return "";
     }
 }
