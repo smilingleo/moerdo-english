@@ -20,7 +20,7 @@ public class AnkiGetCardsHandler extends AbstractAnkiHandler {
         UserInfo userInfo = setOrRefreshAnkiCookie(request);
 
         final String ankiCookie = userInfo.getAnkiCookie();
-
+        // System.out.println("UserInfo used for GetCard:" + userInfo.toString());
         client.selectDeck(userInfo.getAnkiWebCookie(), request.getDeckId());
         GetCardsResponse ankiResponse = client.getCards(ankiCookie, request.getBatchAnswer());
 

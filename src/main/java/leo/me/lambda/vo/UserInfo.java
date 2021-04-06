@@ -6,6 +6,7 @@ import static leo.me.Constants.PAID_USER_CLASS;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Objects;
+import java.util.StringJoiner;
 
 public class UserInfo {
     private String wechatId;
@@ -127,5 +128,21 @@ public class UserInfo {
 
     public void setCookieExpiredOn(String cookieExpiredOn) {
         this.cookieExpiredOn = cookieExpiredOn;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", UserInfo.class.getSimpleName() + "[", "]")
+                .add("wechatId='" + wechatId + "'")
+                .add("name='" + name + "'")
+                .add("createdOn='" + createdOn + "'")
+                .add("lastLogin='" + lastLogin + "'")
+                .add("leftPoints=" + leftPoints)
+                .add("preference='" + preference + "'")
+                .add("userClass='" + userClass + "'")
+                .add("ankiCookie='" + ankiCookie + "'")
+                .add("ankiWebCookie='" + ankiWebCookie + "'")
+                .add("cookieExpiredOn='" + cookieExpiredOn + "'")
+                .toString();
     }
 }

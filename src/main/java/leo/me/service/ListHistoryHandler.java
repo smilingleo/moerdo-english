@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,7 +61,7 @@ public class ListHistoryHandler implements Handler {
     private List<HistoryRecord> loadHistory(UserInfo userInfo) {
         List<S3ObjectSummary> list = new LinkedList<>();
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Shanghai"));
         for (int i = 0; i < LIMIT_HISTORY_BY_MONTH; i++) {
             LocalDate start = today.plusMonths(-1 * i);
             final String dateString = start.toString();

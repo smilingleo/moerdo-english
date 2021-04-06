@@ -145,7 +145,7 @@ public class AnkiWebClient {
                 throw new ServerSideException("登录Ankiweb站点失败, statusCode=" + response.code());
             }
         } catch (IOException e) {
-            throw new ServerSideException("从Ankiweb站点读取卡牌失败，请查看ankiweb.net是否可用", e);
+            throw new ServerSideException(format("从Ankiweb站点读取卡牌失败，请查看ankiweb.net是否可用.  Cookie: %s", ankiCookie), e);
         }
 
     }
@@ -223,10 +223,10 @@ public class AnkiWebClient {
 
     public static void main(String[] args) {
         AnkiWebClient client = new AnkiWebClient();
-        String userCookie = "ankiweb=eyJrIjogInMxUlpIRG05aDJndUFMNEYiLCAiYyI6IDJ9.iZyn1EtpFMHM2X7NIZLUJHi9fgpwQgCBhbJmaAIfYPg";
-//        AnkiCookies cookie = client.getCookie("leo.trash.reg@gmail.com", "");
-//        client.selectDeck(cookie.getAnkiWebCookie(), "did1535418586971");
-//        GetCardsResponse cards = client.getCards(cookie.getAnkiUserCookie(), BatchAnswer.empty());
-//        System.out.println(cards.getCards().size());
+//        String userCookie = "ankiweb=eyJrIjogInMxUlpIRG05aDJndUFMNEYiLCAiYyI6IDJ9.iZyn1EtpFMHM2X7NIZLUJHi9fgpwQgCBhbJmaAIfYPg";
+        AnkiCookies cookie = client.getCookie("leo.trash.reg@gmail.com", "");
+        client.selectDeck(cookie.getAnkiWebCookie(), "did1535418586971");
+        GetCardsResponse cards = client.getCards(cookie.getAnkiUserCookie(), BatchAnswer.empty());
+        System.out.println(cards.getCards().size());
     }
 }

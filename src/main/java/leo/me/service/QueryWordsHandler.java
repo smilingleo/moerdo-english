@@ -33,7 +33,12 @@ public class QueryWordsHandler implements Handler {
     @Override
     public MoerdoResponse handle(MoerdoRequest request) {
         final AnkiNoteDao dao = new AnkiNoteDao(":resource:collection.anki2");
-        List<String> notes = dao.findNotes(request.getWords().toArray(new String[]{}));
+        List<String> notes = dao.findNotes(
+                request.getWords().stream()
+                        .map(word -> word.trim().toLowerCase())
+                        .collect(Collectors.toList())
+                        .toArray(new String[]{})
+        );
         List<AnkiCard> ankiCards = notes.stream()
                 .map(content -> {
                     int pos = content.indexOf("<div");

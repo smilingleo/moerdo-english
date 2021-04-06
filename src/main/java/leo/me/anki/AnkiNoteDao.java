@@ -40,7 +40,7 @@ public class AnkiNoteDao {
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(
-                    format("select flds from notes where sfld in ('%s')",
+                    format("select flds from notes where lower(sfld) in ('%s')",
                             Arrays.stream(words)
                                     .map(String::trim)
                                     .collect(Collectors.joining("','"))));
